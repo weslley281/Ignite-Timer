@@ -10,12 +10,31 @@ import {
   TaskInput,
 } from './styles';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as zod from 'zod';
+
+const newCircleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a Tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'Não pode ser menor que 5')
+    .max(60, 'Não pode ser maior que 60'),
+});
+
+// converte o newCircleFormValidationSchema em uma interface
+type newCircleFormData = zod.infer<typeof newCircleFormValidationSchema>;
 
 export function Home() {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, reset } = useForm<newCircleFormData>({
+    resolver: zodResolver(newCircleFormValidationSchema),
+    defaultValues: { task: '', minutesAmount: 0 },
+  });
   const task = watch('task');
 
-  function handleCreateNewCicle(data: any) {}
+  function handleCreateNewCicle(data: newCircleFormData) {
+    console.log(data);
+    reset();
+  }
 
   return (
     <HomeContainer>
