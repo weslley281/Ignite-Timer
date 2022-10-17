@@ -24,17 +24,34 @@ const newCircleFormValidationSchema = zod.object({
 // converte o newCircleFormValidationSchema em uma interface
 type newCircleFormData = zod.infer<typeof newCircleFormValidationSchema>;
 
+interface Cycle {
+  id: string;
+  task: string;
+  minutesAmount: number;
+}
+
 export function Home() {
+  const [cycles, setCycles] = useState<Cycle[]>([]);
+
   const { register, handleSubmit, watch, reset } = useForm<newCircleFormData>({
     resolver: zodResolver(newCircleFormValidationSchema),
     defaultValues: { task: '', minutesAmount: 0 },
   });
-  const task = watch('task');
 
   function handleCreateNewCicle(data: newCircleFormData) {
-    console.log(data);
+    const newCicle: Cycle = {
+      id: String(new Date().getTime()),
+      minutesAmount: data.minutesAmount,
+      task: data.task,
+    };
+
+    setCycles((state) => [...state, newCicle]);
+
     reset();
   }
+
+  const task = watch('task');
+  const isSubmitDisabled = !task;
 
   return (
     <HomeContainer>
