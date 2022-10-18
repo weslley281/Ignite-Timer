@@ -32,6 +32,7 @@ interface Cycle {
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]);
+  const [activeCycleId, setActiveCycleId] = useState<String | null>(null);
 
   const { register, handleSubmit, watch, reset } = useForm<newCircleFormData>({
     resolver: zodResolver(newCircleFormValidationSchema),
@@ -39,17 +40,20 @@ export function Home() {
   });
 
   function handleCreateNewCicle(data: newCircleFormData) {
+    const id = String(new Date().getTime());
+
     const newCicle: Cycle = {
-      id: String(new Date().getTime()),
+      id,
       minutesAmount: data.minutesAmount,
       task: data.task,
     };
 
     setCycles((state) => [...state, newCicle]);
-
+    setActiveCycleId(id);
     reset();
   }
 
+  const activeCicle = cycles.find((cycle) => cycle.id === activeCycleId);
   const task = watch('task');
   const isSubmitDisabled = !task;
 
@@ -95,7 +99,7 @@ export function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled={!task} type="submit">
+        <StartCountdownButton disabled={isSubmitDisabled} type="submit">
           <Play size={24} /> Começar
         </StartCountdownButton>
       </form>
