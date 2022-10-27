@@ -25,7 +25,7 @@ const newCycleFormValidationSchema = zod.object({
 type newCircleFormData = zod.infer<typeof newCycleFormValidationSchema>;
 
 export function Home() {
-  const { activeCycle, createNewCicle, interruptCurrentCycle } =
+  const { activeCycle, createNewCycle, interruptCurrentCycle } =
     useContext(CyclesContext);
   const newCycleForm = useForm<newCircleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -36,7 +36,7 @@ export function Home() {
   const isSubmitDisabled = !task;
 
   function handleCreateNewCycle(data: newCircleFormData) {
-    createNewCicle(data);
+    createNewCycle(data);
     reset();
   }
 
